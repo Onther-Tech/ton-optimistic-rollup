@@ -8,14 +8,37 @@ import { ERC165Checker } from "../../openzeppelin-contracts/contracts/introspect
 import { SeigToken } from "./SeigToken.sol";
 import { SeigManagerI } from "../interfaces/SeigManagerI.sol";
 
+import { Abs_L2DepositedToken } from "../../optimism/Abs_L2DepositedToken.sol";
 
 /**
  * @dev Current implementations is just for testing seigniorage manager.
  */
-contract TON is Ownable, ERC20Mintable, ERC20Detailed, SeigToken {
-  constructor() public ERC20Detailed("Tokamak Network Token", "TON", 18) {}
+contract TON is Abs_L2DepositedToken, Ownable, ERC20Mintable, ERC20Detailed, SeigToken {
+  constructor(address _l2CrossDomainMessenger) public 
+      ERC20Detailed("Tokamak Network Token", "TON", 18) 
+      Abs_L2DepositedToken(_l2CrossDomainMessenger)
+  {}
 
   function setSeigManager(SeigManagerI _seigManager) external {
     revert("TON: TON doesn't allow setSeigManager");
   }
+
+  function _handleInitiateWithdrawal(
+        address _to,
+        uint _amount
+    )
+        internal
+    {
+        _burn(msg.sender, _amount);
+    }
+
+    // When a deposit is finalized, we credit the account on L2 with the same amount of tokens.
+    function _handleFinalizeDeposit(
+        address _to,
+        uint _amount
+    )
+        internal
+    {
+        _mint(_to, _amount);
+    }
 }

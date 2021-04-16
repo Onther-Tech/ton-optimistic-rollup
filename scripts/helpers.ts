@@ -3,7 +3,7 @@ import { Wallet, ContractFactory, Contract } from 'ethers'
 import { getContractFactory } from '@eth-optimism/contracts'
 
 import * as TON from '../artifacts/TON.json'
-import * as Def__MyL2DepositedERC20 from '../artifacts-external/MyL2DepositedERC20.ovm.json'
+import * as TON_OVM from '../artifacts-ovm/TON.json'
 
 
 export type ConfiguredGateway = {
@@ -50,12 +50,9 @@ export const deployNewGateway = async (
     const ERC20Config: ERC20Config = await getDeployedERC20Config(l1Wallet.provider, l1ERC20)
 
     // Deploy L2 ERC20 Gateway
-    const Factory__OVM_L2DepositedERC20 = new ContractFactory(Def__MyL2DepositedERC20.abi, Def__MyL2DepositedERC20.bytecode, l2Wallet)
+    const Factory__OVM_L2DepositedERC20 = new ContractFactory(TON_OVM.abi, TON_OVM.bytecode, l2Wallet)
     OVM_L2DepositedERC20 = await Factory__OVM_L2DepositedERC20.deploy(
-        l2MessengerAddress,
-        ERC20Config.decimals,
-        'OVM_' + ERC20Config.name,
-        'ovm' + ERC20Config.ticker
+        l2MessengerAddress
     )
     await OVM_L2DepositedERC20.deployTransaction.wait()
     console.log('OVM_L2DepositedERC20 deployed to:', OVM_L2DepositedERC20.address)
@@ -97,7 +94,7 @@ export const setupOrRetrieveGateway = async (
     ) {
         console.log('No L1 ERC20 specified--deploying a new test ERC20 on L1.')
         const L1ERC20Factory = new ContractFactory(TON.abi, TON.bytecode, l1Wallet)
-        L1_ERC20 = await L1ERC20Factory.deploy()
+        L1_ERC20 = await L1ERC20Factory.deploy(l1Wallet.address)
         const mintTx = await L1_ERC20.mint(l1Wallet.address, 1000)
         console.log('New L1_ERC20 deployed to:', L1_ERC20.address)
         l1ERC20Address = L1_ERC20.address
@@ -114,9 +111,9 @@ export const setupOrRetrieveGateway = async (
         OVM_L1ERC20Gateway = newGateway.OVM_L1ERC20Gateway
         OVM_L2DepositedERC20 = newGateway.OVM_L2DepositedERC20
     } else {
-        OVM_L1ERC20Gateway = new Contract(l1ERC20GatewayAddress, Def__MyL2DepositedERC20.abi, l1Wallet)
+        OVM_L1ERC20Gateway = new Contract(l1ERC20GatewayAddress, TON_OVM.abi, l1Wallet)
         const l2ERC20GatewayAddress = await OVM_L1ERC20Gateway.l2ERC20Gateway()
-        OVM_L2DepositedERC20 = new Contract(l2ERC20GatewayAddress, Def__MyL2DepositedERC20.abi, l2Wallet)
+        OVM_L2DepositedERC20 = new Contract(l2ERC20GatewayAddress, TON_OVM.abi, l2Wallet)
     }
 
     console.log('Completed getting full ERC20 gateway.')
