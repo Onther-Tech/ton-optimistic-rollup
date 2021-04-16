@@ -1,0 +1,4 @@
+{
+  "compilerVersion": "./node_modules/@eth-optimism/solc",
+  "outputDirectory": "./artifacts-ovm"
+}

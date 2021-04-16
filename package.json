@@ -1,0 +1,39 @@
+{
+  "name": "ton-optimistic-rollup",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "compile": "./node_modules/.bin/waffle .waffle.json",
+    "compile:ovm": "./node_modules/.bin/waffle .waffle-ovm.json",
+    "deposit-withdraw": "ts-node scripts/deposit-withdraw.ts"
+  },
+  "dependencies": {
+    "@eth-optimism/contracts": "^0.1.10",
+    "@eth-optimism/plugins": "^0.0.6",
+    "@eth-optimism/solc": "^0.5.16-alpha.6",
+    "@eth-optimism/watcher": "^0.0.1-alpha.9",
+    "chai-bytes": "^0.1.1",
+    "dotenv": "^8.2.0",
+    "rlp": "^2.1.0",
+    "axios": "^0.19.1"
+  },
+  "devDependencies": {
+    "@eth-optimism/solc": "^0.7.6-alpha.1",
+    "@makerdao/currency": "^0.9.6",
+    "ethereum-waffle": "^3.3.0",
+    "ethereumjs-abi": "^0.6.5",
+    "ethers": "^5.0.24",
+    "ethjs-abi": "^0.2.1",
+    "mocha": "^7.0.0",
+    "solc": "0.5.16",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
+    "web3-utils": "^1.2.1"
+  }
+}
